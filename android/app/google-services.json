@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "951554641584",
+    "project_id": "preco-bcb81",
+    "storage_bucket": "preco-bcb81.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951554641584:android:2c9c590b3312a905083575",
+        "android_client_info": {
+          "package_name": "com.company.preco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951554641584-f1uc471336k9kdus745p54quh4dmmoa2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIS7-Njp6lEsUvuW5koP-anqK3mTkGlfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951554641584-f1uc471336k9kdus745p54quh4dmmoa2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
