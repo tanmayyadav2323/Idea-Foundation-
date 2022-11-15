@@ -1,18 +1,25 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preco/repositories/auth/auth_repository.dart';
+import 'package:preco/repositories/user/user_repository.dart';
 
+import '../../config/session_helper.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository _authRepository;
-  StreamSubscription<auth.User?>? _userSubscription;
+  late StreamSubscription<auth.User?> _userSubscription;
+  bool isFirstTime = false;
 
-  AuthBloc({required AuthRepository authRepository})
-      : _authRepository = authRepository,
+  AuthBloc({
+    required AuthRepository authRepository,
+  })  : _authRepository = authRepository,
         super(AuthState.unknown()) {
     _userSubscription =
         _authRepository.user.listen((user) => add(AuthUserChanged(user: user)));
@@ -20,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   @override
   Future<void> close() {
-    _userSubscription!.cancel();
+    _userSubscription.cancel();
     return super.close();
   }
 
@@ -29,13 +36,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (event is AuthUserChanged) {
       yield* _mapAuthUserChangedToState(event);
     } else if (event is AuthLogoutRequested) {
+      // await StreamChat.of(event.context).client.disconnectUser();
       await _authRepository.logOut();
     }
   }
 
   Stream<AuthState> _mapAuthUserChangedToState(AuthUserChanged event) async* {
-    yield event.user != null
-        ? AuthState.authenticated(user: event.user!)
-        : AuthState.unauthenticated();
+    if (event.user != null) {
+      final check =
+          await _authRepository.checkUserDataExists(userId: event.user!.uid);
+      if (check) {
+        final user =
+            await UserRepository().getUserWithId(userId: event.user!.uid);
+        SessionHelper.uid = event.user?.uid ?? '';
+        SessionHelper.displayName = user.displayName;
+        SessionHelper.phone = user.phone;
+        SessionHelper.profileImageUrl = user.profileImageUrl;
+        SessionHelper.username = user.username;
+        SessionHelper.completed = user.completed;
+        SessionHelper.todo = user.todo;
+      }
+      yield AuthState.authenticated(user: event.user!, check: check);
+    } else {
+      yield AuthState.unauthenticated();
+    }
   }
 }

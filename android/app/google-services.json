@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "951554641584-nbkok7bdie7nnn8argvvd135kgfj5bga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.company.preco",
+            "certificate_hash": "de20e252a7ac464588957600a922cf655b40062e"
+          }
+        },
+        {
           "client_id": "951554641584-f1uc471336k9kdus745p54quh4dmmoa2.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class BaseAuthRepository {
   Stream<auth.User?> get user;
 
-  Future<bool> sendOTP({
-    required String phone,
-    required verificationFailed,
-  });
+  Future<bool> sendOTP({required String phone});
+
   Future<auth.UserCredential> verifyOTP({required String otp});
-  Future<auth.UserCredential> storeUser({required credential});
+
+  Future<bool> checkUserDataExists({required String userId});
+
   Future<void> logOut();
 }

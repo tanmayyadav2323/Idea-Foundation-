@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import '../../config/paths.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import 'base_auth_repository.dart';
 
 class AuthRepository extends BaseAuthRepository {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firebaseFirestore;
   final auth.FirebaseAuth _firebaseAuth;
+  final usersRef = FirebaseFirestore.instance.collection('users');
 
   AuthRepository({
     FirebaseFirestore? firebaseFirestore,
@@ -16,51 +21,49 @@ class AuthRepository extends BaseAuthRepository {
   @override
   Stream<auth.User?> get user => _firebaseAuth.userChanges();
 
-  String _verificationId = "";
-  int? _token;
   @override
-  Future<bool> sendOTP({
-    required String phone,
-    required verificationFailed,
-  }) async {
+  Future<bool> checkUserDataExists({required String userId}) async {
+    String _errorMessage = 'Something went wrong';
+    try {
+      final user = await usersRef.doc(userId).get();
+      return user.exists;
+    } catch (e) {
+      _errorMessage = e.toString();
+      debugPrint(e.toString());
+    }
+    throw Exception(_errorMessage);
+  }
+
+  String _verificationId = "";
+  int? _resendToken;
+  @override
+  Future<bool> sendOTP({required String phone}) async {
     await _firebaseAuth.verifyPhoneNumber(
       phoneNumber: phone,
       verificationCompleted: (auth.PhoneAuthCredential credential) {},
-      verificationFailed: (err) {
-        verificationFailed(err);
-      },
+      verificationFailed: (auth.FirebaseAuthException e) {},
       codeSent: (String verificationId, int? resendToken) async {
         _verificationId = verificationId;
-        _token = resendToken;
+        _resendToken = resendToken;
       },
-      forceResendingToken: _token,
-      timeout: const Duration(seconds: 60),
-      codeAutoRetrievalTimeout: (_) {},
+      timeout: const Duration(seconds: 25),
+      forceResendingToken: _resendToken,
+      codeAutoRetrievalTimeout: (String verificationId) {
+        _verificationId = verificationId;
+      },
     );
+    debugPrint("_verificationId: $_verificationId");
     return true;
   }
 
   @override
-  Future<auth.UserCredential> verifyOTP({required String otp}) async {
-    final credential = auth.PhoneAuthProvider.credential(
+  Future<auth.UserCredential> verifyOTP(
+      {required String otp, Map<String, dynamic>? json}) async {
+    auth.PhoneAuthCredential credential = auth.PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: otp);
-    return storeUser(credential: credential);
-  }
+    final credentials = await _firebaseAuth.signInWithCredential(credential);
 
-  @override
-  Future<auth.UserCredential> storeUser({required credential}) async {
-    final userCredential = await _firebaseAuth.signInWithCredential(credential);
-    final doc = await _firebaseFirestore
-        .collection(Paths.users)
-        .doc(userCredential.user!.uid)
-        .get();
-    if (!doc.exists) {
-      _firebaseFirestore
-          .collection(Paths.users)
-          .doc(userCredential.user!.uid)
-          .set({});
-    }
-    return userCredential;
+    return credentials;
   }
 
   @override
