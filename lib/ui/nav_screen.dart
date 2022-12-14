@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:preco/config/session_helper.dart';
 import 'package:preco/ui/about_us_page.dart';
 import 'package:preco/ui/admin_page.dart';
+import 'package:preco/ui/all_video_folder.dart';
 import 'package:preco/ui/gallery_nav_screen.dart';
 import 'package:preco/ui/program_info_page.dart';
 import 'package:preco/ui/raise_query_page.dart';
@@ -17,7 +18,6 @@ import 'package:preco/ui/video_screen.dart';
 import 'package:preco/ui/youtube_videos.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../blocs/auth/auth_bloc.dart';
 import '../login/login_cubit/login_cubit.dart';
 
@@ -208,11 +208,17 @@ class _NavScreenState extends State<NavScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Hey"),
+                          Text(
+                            "Hey,",
+                            style: TextStyle(fontSize: 14.sp),
+                          ),
                           Text(
                             SessionHelper.displayName.toString(),
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 16.sp),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -313,7 +319,7 @@ class _NavScreenState extends State<NavScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => VideoScreen()));
+                                  builder: (context) => AllVideoFolderPage()));
                         },
                         child: Container(
                           decoration: BoxDecoration(

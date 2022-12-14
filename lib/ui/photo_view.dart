@@ -148,7 +148,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             child: Container(
               width: 300,
               height: 300,
-              child: SvgPicture.asset(
+              child: SvgPicture.network(
                 item.resource,
                 height: 200.0,
               ),
@@ -160,7 +160,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             heroAttributes: PhotoViewHeroAttributes(tag: item.id),
           )
         : PhotoViewGalleryPageOptions(
-            imageProvider: AssetImage(item.resource),
+            imageProvider: NetworkImage(item.resource),
             initialScale: PhotoViewComputedScale.contained,
             minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
             maxScale: PhotoViewComputedScale.covered * 4.1,

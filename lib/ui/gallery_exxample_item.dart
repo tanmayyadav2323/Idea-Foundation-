@@ -35,7 +35,7 @@ class GalleryExampleItemThumbnail extends StatelessWidget {
         onTap: onTap,
         child: Hero(
           tag: galleryExampleItem.id,
-          child: Image.asset(
+          child: Image.network(
             galleryExampleItem.resource,
             height: 150.0,
             width: 150,

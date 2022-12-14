@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:preco/model/image_folder.dart';
 import 'package:preco/ui/photo_view.dart';
+import 'package:sizer/sizer.dart';
 
 import 'gallery_exxample_item.dart';
 
@@ -16,27 +20,66 @@ class _GalleryNavScreenState extends State<GalleryNavScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Text(
-                "Gallery",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              imageOfLeaningCentreWidget(),
-              SizedBox(
-                height: 16,
-              ),
-              galleryWidget(context),
-              SizedBox(
-                height: 16,
-              ),
-              designWidget(context)
-            ],
+        child: FutureBuilder(
+            future: FirebaseFirestore.instance.collection('ImageFolder').get(),
+            builder: (context,
+                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+              if (snapshot.hasData) {
+                List<ImageFolder> folders = snapshot.data!.docs.map((e) {
+                  return ImageFolder.fromMap(e.data());
+                }).toList();
+                return Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        "Gallery",
+                        style: TextStyle(
+                            fontSize: 20.sp, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                      Column(
+                        children: folders
+                            .map((e) => buildImageFolder(e) as Widget)
+                            .toList(),
+                      )
+                    ],
+                  ),
+                );
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }),
+      ),
+    );
+  }
+
+  buildImageFolder(ImageFolder imageFolder) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GalleryExample(
+              gItems: imageFolder.urls
+                  .map((e) => GalleryExampleItem(id: 'id', resource: e))
+                  .toList(),
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.all(8),
+        decoration:
+            BoxDecoration(border: Border.all(color: Colors.black, width: 1)),
+        child: ListTile(
+          title: Text(
+            imageFolder.name,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
         ),
       ),
@@ -45,64 +88,7 @@ class _GalleryNavScreenState extends State<GalleryNavScreen> {
 
   imageOfLeaningCentreWidget() {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GalleryExample(
-                    gItems: <GalleryExampleItem>[
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img1.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img2.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img3.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img4.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img5.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img6.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img7.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img8.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img9.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img10.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img11.jpg",
-                      ),
-                      GalleryExampleItem(
-                        id: "tag1",
-                        resource: "assets/images/lc_img12.jpg",
-                      ),
-                    ],
-                  )),
-        );
-      },
+      onTap: () {},
       child: Container(
         decoration:
             BoxDecoration(border: Border.all(color: Colors.black, width: 1)),
@@ -119,84 +105,7 @@ class _GalleryNavScreenState extends State<GalleryNavScreen> {
 
 galleryWidget(context) {
   return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => GalleryExample(
-                  gItems: <GalleryExampleItem>[
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image1.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image2.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image3.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image4.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image5.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image6.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image7.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image8.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image9.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image10.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image11.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image12.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image13.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image14.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image15.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image16.jpg",
-                    ),
-                    GalleryExampleItem(
-                      id: "tag1",
-                      resource: "assets/images/store_image17.jpg",
-                    ),
-                  ],
-                )),
-      );
-    },
+    onTap: () {},
     child: Container(
       decoration:
           BoxDecoration(border: Border.all(color: Colors.black, width: 1)),
