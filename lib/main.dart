@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preco/blocs/auth/auth_bloc.dart';
 import 'package:preco/repositories/auth/auth_repository.dart';
+import 'package:preco/repositories/storage/storage_repository.dart';
 import 'package:preco/repositories/user/user_repository.dart';
 import 'package:sizer/sizer.dart';
 
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<UserRepository>(
           create: (_) => UserRepository(),
+        ),
+        RepositoryProvider<StorageRepository>(
+          create: (_) => StorageRepository(),
         ),
       ],
       child: MultiBlocProvider(

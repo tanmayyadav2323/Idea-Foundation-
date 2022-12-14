@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:preco/login/widgets/standard_elevated_button.dart';
 import 'package:preco/model/image_folder.dart';
 import 'package:preco/model/video_folder.dart';
+import 'package:preco/ui/image_folder_page.dart';
 import 'package:sizer/sizer.dart';
 
 class AdminPage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _AdminPageState extends State<AdminPage> {
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   'Edit Content',
@@ -52,65 +54,122 @@ class _AdminPageState extends State<AdminPage> {
     return StreamBuilder(
         stream:
             FirebaseFirestore.instance.collection('ImageFolder').snapshots(),
-        builder: (context, snapshot) {
-          return Column(
-            children: [
-              Row(
+        builder: (context, AsyncSnapshot<QuerySnapshot?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.connectionState == ConnectionState.active ||
+              snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return const Text('Error');
+            } else if (snapshot.hasData) {
+              List<Widget> ls = [];
+              for (var doc in snapshot.data!.docs) {
+                ls.add(buildTile(doc['name'], () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ImageFolderPage(docId: doc.id,)),
+                  );
+                }, () async {
+                  Navigator.of(context).pop();
+                  await FirebaseFirestore.instance
+                      .collection('ImageFolder')
+                      .doc(doc.id)
+                      .delete();
+
+                  ;
+                }));
+              }
+              return Column(
                 children: [
-                  Text(
-                    'Images Folder',
-                    style: TextStyle(fontSize: 16.sp),
+                  Row(
+                    children: [
+                      Text(
+                        'Images Folder',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        onPressed: () {
+                          name.clear();
+                          uploadImages = true;
+                          buildBottomSheet();
+                        },
+                        icon: Icon(Icons.add),
+                      ),
+                    ],
                   ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        uploadImages = true;
-                      });
-                      buildBottomSheet();
-                    },
-                    icon: Icon(Icons.add),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Column(
+                    children: ls,
                   )
                 ],
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-              
-            ],
-          );
+              );
+            } else {
+              return const Text('Empty data');
+            }
+          } else {
+            return Text('State: ${snapshot.connectionState}');
+          }
         });
   }
 
   buildVideoFolder() {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              'Videos Folder',
-              style: TextStyle(fontSize: 16.sp),
-            ),
-            Spacer(),
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    uploadImages = false;
-                  });
-                  buildBottomSheet();
-                },
-                icon: Icon(Icons.add))
-          ],
-        ),
-        SizedBox(
-          height: 2.h,
-        ),
-        buildTile('Folder 1', () => null),
-        buildTile('Folder 1', () => null),
-        buildTile('Folder 1', () => null),
-        buildTile('Folder 1', () => null),
-      ],
-    );
+    return StreamBuilder(
+        stream:
+            FirebaseFirestore.instance.collection('VideoFolder').snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.connectionState == ConnectionState.active ||
+              snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return const Text('Error');
+            } else if (snapshot.hasData) {
+              List<Widget> ls = [];
+              for (var doc in snapshot.data!.docs) {
+                ls.add(buildTile(doc['name'], () {}, () async {
+                  Navigator.of(context).pop();
+                  await FirebaseFirestore.instance
+                      .collection('VideoFolder')
+                      .doc(doc.id)
+                      .delete();
+                }));
+              }
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Videos Folder',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                      Spacer(),
+                      IconButton(
+                          onPressed: () {
+                            name.clear();
+                            uploadImages = false;
+                            buildBottomSheet();
+                          },
+                          icon: Icon(Icons.add))
+                    ],
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Column(
+                    children: ls,
+                  )
+                ],
+              );
+            } else {
+              return const Text('Empty data');
+            }
+          } else {
+            return Text('State: ${snapshot.connectionState}');
+          }
+        });
   }
 
   buildBottomSheet() {
@@ -130,7 +189,7 @@ class _AdminPageState extends State<AdminPage> {
                 top: 16,
                 bottom: 16,
               ),
-              height: 30.h,
+              height: 25.h,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -144,6 +203,7 @@ class _AdminPageState extends State<AdminPage> {
                   ),
                   TextField(
                     controller: name,
+                    autofocus: true,
                     cursorColor: Colors.black,
                     decoration: InputDecoration(
                       hintText: 'Enter Name',
@@ -174,6 +234,7 @@ class _AdminPageState extends State<AdminPage> {
                       labelText: 'Create',
                       onTap: () async {
                         if (name.text.isEmpty) return;
+                        Navigator.of(context).pop();
                         uploadImages
                             ? await FirebaseFirestore.instance
                                 .collection('ImageFolder')
@@ -183,18 +244,12 @@ class _AdminPageState extends State<AdminPage> {
                                       name: name.text,
                                       urls: []).toMap(),
                                 )
-                                .then((value) {
-                                Navigator.of(context).pop();
-                              })
                             : await FirebaseFirestore.instance
                                 .collection('VideoFolder')
                                 .add(VideoFolder(
                                     id: null,
                                     name: name.text,
-                                    videos: []).toMap())
-                                .then((value) {
-                                Navigator.of(context).pop();
-                              });
+                                    videos: []).toMap());
                       })
                 ],
               ),
@@ -203,8 +258,8 @@ class _AdminPageState extends State<AdminPage> {
         });
   }
 
-  buildTile(String name, Function() onTap) {
-    return GestureDetector(
+  buildTile(String name, Function() onTap, Function() delete) {
+    return InkWell(
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.all(16),
@@ -216,6 +271,38 @@ class _AdminPageState extends State<AdminPage> {
             name,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
+          trailing: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  useSafeArea: true,
+                  builder: (ctx) => AlertDialog(
+                    title: Text(
+                      "Are you sure ?",
+                      textAlign: TextAlign.left,
+                    ),
+                    content: Text(
+                        'This action will permanently delete it.You will no longer be able to access the folder.'),
+                    actions: [
+                      ElevatedButton(
+                        onPressed: delete,
+                        child: const Text(
+                          'Delete',
+                        ),
+                      ),
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'Cancel',
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+              icon: Icon(Icons.delete)),
         ),
       ),
     );
