@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:preco/login/welcome_screen.dart';
 
 import 'login_screen.dart';
 import 'otp_screen.dart';
+import 'welcome_screen.dart';
 
 class LoginPageView extends StatefulWidget {
   static const routeName = '/loginPageView';
@@ -33,13 +33,13 @@ class _LoginPageViewState extends State<LoginPageView> {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          body: SafeArea(
-            child: PageView(
-              physics: NeverScrollableScrollPhysics(),
-              children: _buildPages(),
-              controller: _pageController,
-              onPageChanged: _onPageViewChange,
-            ),
+          body: PageView(
+
+            physics: NeverScrollableScrollPhysics(),
+
+            children: _buildPages(),
+            controller: _pageController,
+            onPageChanged: _onPageViewChange,
           ),
         ),
       ),
@@ -50,6 +50,7 @@ class _LoginPageViewState extends State<LoginPageView> {
     return [
       WelcomeScreen(
         controller: _pageController,
+        
       ),
       LoginScreen(
         controller: _pageController,

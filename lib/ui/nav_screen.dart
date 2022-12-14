@@ -1,9 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:preco/config/session_helper.dart';
+import 'package:preco/ui/about_us_page.dart';
+import 'package:preco/ui/admin_page.dart';
 import 'package:preco/ui/gallery_nav_screen.dart';
 import 'package:preco/ui/program_info_page.dart';
+import 'package:preco/ui/raise_query_page.dart';
+import 'package:preco/ui/settings_page.dart';
 import 'package:preco/ui/video_screen.dart';
 import 'package:preco/ui/youtube_videos.dart';
 import 'package:sizer/sizer.dart';
@@ -29,11 +34,142 @@ class NavScreen extends StatefulWidget {
 }
 
 class _NavScreenState extends State<NavScreen> {
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
+        key: _key,
+        endDrawerEnableOpenDragGesture: false,
+        endDrawer: Drawer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                height: 40.h,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(50.0),
+                  child: CircleAvatar(
+                    child: Text(
+                      SessionHelper.displayName![0],
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 50.sp),
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.question_mark),
+                title: const Text('Raise a query'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RaiseQueryPage()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.admin_panel_settings,
+                ),
+                title: const Text('Admin'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AdminPage()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.settings,
+                ),
+                title: const Text('Settings'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.more_outlined,
+                ),
+                title: const Text('About us'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AboutUsPage()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.web_asset,
+                ),
+                title: const Text('Visit Website'),
+                onTap: () {
+                  launch('https://ideafoundation.org.in/');
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.logout,
+                ),
+                title: const Text('Logout'),
+                onTap: () {
+                  context
+                      .read<AuthBloc>()
+                      .add(AuthLogoutRequested(context: context));
+                  context.read<LoginCubit>().logoutRequested();
+                },
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
+                      child: FaIcon(FontAwesomeIcons.facebook),
+                      onTap: () {
+                        launch('https://www.facebook.com/idea.ideafoundation');
+                      },
+                    ),
+                    InkWell(
+                      child: FaIcon(FontAwesomeIcons.linkedin),
+                      onTap: () {
+                        launch(
+                            'https://www.linkedin.com/in/idea-foundation-53995b99/');
+                      },
+                    ),
+                    InkWell(
+                      child: FaIcon(FontAwesomeIcons.instagram),
+                      onTap: () {
+                        launch(
+                            'https://www.instagram.com/ideafoundation.india/');
+                      },
+                    ),
+                    InkWell(
+                      child: FaIcon(FontAwesomeIcons.twitter),
+                      onTap: () {
+                        launch('https://twitter.com/IDEAOrg');
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -57,13 +193,11 @@ class _NavScreenState extends State<NavScreen> {
                         ],
                       ),
                       IconButton(
-                          onPressed: () {
-                            context
-                                .read<AuthBloc>()
-                                .add(AuthLogoutRequested(context: context));
-                            context.read<LoginCubit>().logoutRequested();
-                          },
-                          icon: Icon(Icons.logout))
+                        onPressed: () {
+                          _key.currentState!.openEndDrawer();
+                        },
+                        icon: Icon(Icons.menu),
+                      ),
                     ],
                   ),
                   SizedBox(

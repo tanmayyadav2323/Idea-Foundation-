@@ -4,13 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
+import 'package:preco/config/session_helper.dart';
+import 'package:preco/model/failure_model.dart';
 import 'package:preco/model/user_model.dart';
 import 'package:preco/repositories/auth/auth_repository.dart';
 import 'package:preco/repositories/user/user_repository.dart';
 
-import '../../config/session_helper.dart';
-import '../../model/failure_model.dart';
-import '../../repositories/storage/storage_repository.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -51,7 +50,7 @@ class LoginCubit extends Cubit<LoginState> {
       emit(state.copyWith(status: LoginStatus.success));
     } catch (err) {
       emit(state.copyWith(
-          failure: const Failure(message: "Unable to verify otp"),
+          failure: const Failure(message: "Verification Failed"),
           status: LoginStatus.error));
     }
   }

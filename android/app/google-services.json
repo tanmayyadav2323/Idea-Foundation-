@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:951554641584:android:2c9c590b3312a905083575",
+        "mobilesdk_app_id": "1:951554641584:android:166241c18b57ffb7083575",
         "android_client_info": {
-          "package_name": "com.company.preco"
+          "package_name": "com.company.ideafoundation"
         }
       },
       "oauth_client": [
         {
-          "client_id": "951554641584-nbkok7bdie7nnn8argvvd135kgfj5bga.apps.googleusercontent.com",
+          "client_id": "951554641584-50quiams44e9hbcebok9mete9tmq27p7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.company.preco",
+            "package_name": "com.company.ideafoundation",
             "certificate_hash": "de20e252a7ac464588957600a922cf655b40062e"
           }
         },

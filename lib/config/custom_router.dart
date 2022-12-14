@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:preco/login/pageview.dart';
 import 'package:preco/ui/authentication_screen.dart';
 import 'package:preco/ui/nav_screen.dart';
-
 import '../login/onboarding/onboarding_pageview.dart';
+import '../login/pageview.dart';
 import '../ui/splash_screen.dart';
 
 class CustomRouter {

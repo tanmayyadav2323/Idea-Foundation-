@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:preco/login/onboarding/registration_screen.dart';
+
+import 'registration_screen.dart';
 
 class Onboardingpageview extends StatefulWidget {
   static const routeName = '/Onboardingpageview';

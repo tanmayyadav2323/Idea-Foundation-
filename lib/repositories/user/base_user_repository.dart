@@ -3,7 +3,7 @@ import '../../model/user_model.dart' as us;
 
 abstract class BaseUserRepository {
   Future<us.User> getUserWithId({required String userId});
-  Future<void> updateUser({required User user});
+  Future<void> updateUser({required us.User user});
   Future<void> setUser({required us.User user});
   Future<List<User>> searchUsers({required String query});
   Future<List<User>> getUsersByFollowers(String userId);

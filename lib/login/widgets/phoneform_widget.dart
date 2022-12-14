@@ -55,6 +55,7 @@ class _PhoneFormState extends State<PhoneForm> {
           Icons.arrow_drop_down,
           color: Colors.white,
         ),
+        cursorColor: Colors.white,
         showCountryFlag: widget.textColor == null,
         dropdownTextStyle: TextStyle(
             fontWeight: FontWeight.w400, fontSize: 12.sp, color: Colors.white),
@@ -99,12 +100,13 @@ class _PhoneFormState extends State<PhoneForm> {
           filled: true,
           hintText: "Phone Number",
           errorStyle: TextStyle(
-            color: Colors.black,
-          ),
+              fontSize: 10.sp,
+              color: Colors.white,
+              fontWeight: FontWeight.w700),
           hintStyle: TextStyle(
               fontSize: 12.sp,
               color: Colors.white,
-              fontWeight: FontWeight.w400),
+              fontWeight: FontWeight.w700),
         ),
       ),
     );

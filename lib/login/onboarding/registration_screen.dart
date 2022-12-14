@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:preco/blocs/auth/auth_bloc.dart';
 import 'package:preco/config/session_helper.dart';
 import 'package:preco/model/user_model.dart' as user;
 import 'package:preco/repositories/user/user_repository.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../blocs/auth/auth_bloc.dart';
+import '../../ui/nav_screen.dart';
 import '../widgets/standard_elevated_button.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final FocusNode _lastfocusNode = FocusNode();
   bool? isButtonActive1;
   bool? isButtonActive2;
+  bool isUplaoding = false;
 
   @override
   void initState() {
@@ -74,14 +76,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 2.h),
-                Text(
-                  "People use their real name at Idea Foundation",
-                  style: TextStyle(
-                    fontSize: 10.sp,
-                  ),
-                ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 10.h),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 2.w),
                     child: Row(
@@ -171,41 +166,55 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     )),
               ],
             ),
-            StandardElevatedButton(
-              isArrowButton: true,
-              labelText: "Continue",
-              onTap: () async {
-                widget.pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeIn);
-                SessionHelper.firstName = _firstNameController.text;
-                SessionHelper.lastName = _secondNameController.text;
-                SessionHelper.displayName = _firstNameController.text +
-                    " " +
-                    _secondNameController.text;
-                await UserRepository().setUser(
-                  user: 
-                  user.User(
-                    id: context.read<AuthBloc>().state.user?.uid ?? "",
-                    username: SessionHelper.username ?? "",
-                    displayName: SessionHelper.displayName ?? "",
-                    profileImageUrl: SessionHelper.profileImageUrl ?? '',
-                    age: SessionHelper.age ?? '',
-                    phone:
-                        context.read<AuthBloc>().state.user?.phoneNumber ?? '',
-                    followers: 0,
-                    following: 0,
-                    completed: SessionHelper.completed ?? 0,
-                    todo: SessionHelper.todo ?? 0,
-                    isPrivate: false,
-                    bio: "",
-                    walletBalance: 0,
+            isUplaoding
+                ? LinearProgressIndicator()
+                : StandardElevatedButton(
+                    isArrowButton: true,
+                    labelText: "Continue",
+                    onTap: () async {
+                      SessionHelper.firstName = _firstNameController.text;
+                      SessionHelper.lastName = _secondNameController.text;
+                      SessionHelper.displayName =
+                          "${_firstNameController.text} ${_secondNameController.text}";
+
+                      setState(() {
+                        isUplaoding = true;
+                      });
+
+                      await UserRepository()
+                          .setUser(
+                        user: user.User(
+                          id: context.read<AuthBloc>().state.user?.uid ?? "",
+                          username: SessionHelper.username ?? "",
+                          displayName: SessionHelper.displayName ?? "",
+                          profileImageUrl: SessionHelper.profileImageUrl ?? '',
+                          age: SessionHelper.age ?? '',
+                          phone: context
+                                  .read<AuthBloc>()
+                                  .state
+                                  .user
+                                  ?.phoneNumber ??
+                              '',
+                          followers: 0,
+                          following: 0,
+                          completed: SessionHelper.completed ?? 0,
+                          todo: SessionHelper.todo ?? 0,
+                          isPrivate: false,
+                          bio: "",
+                          walletBalance: 0,
+                        ),
+                      )
+                          .then((value) {
+                        Navigator.of(context)
+                            .pushReplacementNamed(NavScreen.routename);
+                      });
+                      setState(() {
+                        isUplaoding = false;
+                      });
+                    },
+                    isButtonNull:
+                        isButtonActive1 == false || isButtonActive2 == false,
                   ),
-                );
-              },
-              isButtonNull:
-                  isButtonActive1 == false || isButtonActive2 == false,
-            ),
             Padding(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom)),

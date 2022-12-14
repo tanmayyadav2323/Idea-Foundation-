@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sizer/sizer.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:timer_button/timer_button.dart';
 
 import 'login_cubit/login_cubit.dart';
 
@@ -37,18 +38,12 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     _focusNode.requestFocus();
     _initSmsRetriever();
-    // _otpController.addListener(() {
-    //   final isButtonNotActive = _otpController.text.length != 6;
-    //   setState(() {
-    //     this.isButtonNotActive = isButtonNotActive;
-    //   });
-    // });
     super.initState();
   }
 
   @override
   void dispose() {
-    // _otpController.dispose();
+    _otpController.dispose();
     _focusNode.dispose();
     super.dispose();
   }
@@ -63,14 +58,14 @@ class _OtpScreenState extends State<OtpScreen> {
         }
       },
       builder: (context, state) {
-        return SafeArea(
-          child: SingleChildScrollView(
+        return SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
             child: Container(
-              height: MediaQuery.of(context).size.height * 1.1,
               decoration: const BoxDecoration(
                   image: DecorationImage(
                       image: AssetImage("assets/images/boarding_image.jpg"),
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fitHeight,
                       alignment: Alignment.topCenter)),
               child: Container(
                 color: Colors.white.withOpacity(0.3),
@@ -81,6 +76,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppBar(
                             elevation: 0,
@@ -98,16 +94,16 @@ class _OtpScreenState extends State<OtpScreen> {
                                   color: Colors.white,
                                 )),
                           ),
-                          SizedBox(height: 4.h),
-                          SizedBox(height: 2.h),
-                          Text(
-                            "okay, check your texts 💬 - we have sent you a security code!",
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Text(
+                              "Verify",
+                              style: TextStyle(
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                           SizedBox(height: 12.h),
                           Padding(
@@ -117,9 +113,11 @@ class _OtpScreenState extends State<OtpScreen> {
                               focusNode: _focusNode,
                               decoration: UnderlineDecoration(
                                 textStyle: TextStyle(
-                                    fontSize: 10.sp, color: Colors.black),
+                                    fontSize: 14.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400),
                                 colorBuilder: FixedColorBuilder(
-                                    Colors.black.withOpacity(0.6)),
+                                    Colors.white.withOpacity(0.6)),
                                 lineStrokeCap: StrokeCap.round,
                               ),
                               currentCode: _otpController.text,
@@ -135,7 +133,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               },
                             ),
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(height: 4.h),
                           _didntReceiveCodeMethod(),
                           SizedBox(height: 2.h),
                         ],
@@ -148,20 +146,11 @@ class _OtpScreenState extends State<OtpScreen> {
                                   : const CircularProgressIndicator(),
                             )
                           : SizedBox.shrink(),
-                      // StandardElevatedButton(
-                      //     isArrowButton: true,
-                      //     labelText: "Continue",
-                      //     onTap: () {
-                      //       BlocProvider.of<LoginCubit>(context)
-                      //           .verifyOtp(otp: _otpController.text);
-                      //       FocusScope.of(context).requestFocus(FocusNode());
-                      //     },
-                      //     isButtonNull: isButtonNotActive,
-                      //   ),
                       Padding(
-                          padding: EdgeInsets.only(
-                              bottom:
-                                  MediaQuery.of(context).viewInsets.bottom)),
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -179,26 +168,19 @@ class _OtpScreenState extends State<OtpScreen> {
       children: [
         Text(
           "Didn't get the code? ",
-          style: TextStyle(
-            fontSize: 10.sp,
-          ),
+          style: TextStyle(fontSize: 10.sp, color: Colors.white),
         ),
-        // TimerButton(
-        //   label: 'Resend',
-        //   onPressed: () {
-        //     BlocProvider.of<LoginCubit>(context)
-        //         .sendOtpOnPhone(phone: context.read<LoginCubit>().phone);
-        //   },
-        //   timeOutInSeconds: 30,
-        //   disabledColor: Colors.grey[50]!,
-        //   buttonType: ButtonType.FlatButton,
-        //   disabledTextStyle: TextStyle(
-        //    .withOpacity(0.4), fontSize: 10.sp),
-        //   activeTextStyle: TextStyle(
-        //  ,
-        //     fontSize: 10.sp,
-        //   ),
-        // ),
+        TimerButton(
+          label: 'Resend',
+          onPressed: () {
+            BlocProvider.of<LoginCubit>(context)
+                .sendOtpOnPhone(phone: context.read<LoginCubit>().phone);
+          },
+          timeOutInSeconds: 30,
+          disabledColor: Colors.white,
+          buttonType: ButtonType.FlatButton,
+          activeTextStyle: TextStyle(fontSize: 10.sp, color: Colors.white),
+        ),
       ],
     );
   }
