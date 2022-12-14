@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -35,6 +39,24 @@ class NavScreen extends StatefulWidget {
 
 class _NavScreenState extends State<NavScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
+  bool admin = false;
+  @override
+  void initState() {
+    fun();
+    super.initState();
+  }
+
+  fun() async {
+    final snap = await FirebaseFirestore.instance
+        .collection('admins')
+        .doc('phonenumbers')
+        .get();
+
+    List<dynamic> numbers = snap.data()!['numbers'];
+    admin = numbers.contains(SessionHelper.phone);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -75,18 +97,20 @@ class _NavScreenState extends State<NavScreen> {
                   );
                 },
               ),
-              ListTile(
-                leading: Icon(
-                  Icons.admin_panel_settings,
-                ),
-                title: const Text('Admin'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AdminPage()),
-                  );
-                },
-              ),
+              admin
+                  ? ListTile(
+                      leading: Icon(
+                        Icons.admin_panel_settings,
+                      ),
+                      title: const Text('Admin'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AdminPage()),
+                        );
+                      },
+                    )
+                  : SizedBox.shrink(),
               ListTile(
                 leading: Icon(
                   Icons.settings,

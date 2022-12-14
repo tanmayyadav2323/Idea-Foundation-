@@ -7,6 +7,7 @@ import 'package:preco/login/widgets/standard_elevated_button.dart';
 import 'package:preco/model/image_folder.dart';
 import 'package:preco/model/video_folder.dart';
 import 'package:preco/ui/image_folder_page.dart';
+import 'package:preco/ui/video_folder_page.dart';
 import 'package:sizer/sizer.dart';
 
 class AdminPage extends StatefulWidget {
@@ -67,7 +68,10 @@ class _AdminPageState extends State<AdminPage> {
                 ls.add(buildTile(doc['name'], () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ImageFolderPage(docId: doc.id,)),
+                    MaterialPageRoute(
+                        builder: (context) => ImageFolderPage(
+                              docId: doc.id,
+                            )),
                   );
                 }, () async {
                   Navigator.of(context).pop();
@@ -75,8 +79,6 @@ class _AdminPageState extends State<AdminPage> {
                       .collection('ImageFolder')
                       .doc(doc.id)
                       .delete();
-
-                  ;
                 }));
               }
               return Column(
@@ -129,7 +131,15 @@ class _AdminPageState extends State<AdminPage> {
             } else if (snapshot.hasData) {
               List<Widget> ls = [];
               for (var doc in snapshot.data!.docs) {
-                ls.add(buildTile(doc['name'], () {}, () async {
+                ls.add(buildTile(doc['name'], () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => VideoFolderPage(
+                              docId: doc.id,
+                            )),
+                  );
+                }, () async {
                   Navigator.of(context).pop();
                   await FirebaseFirestore.instance
                       .collection('VideoFolder')

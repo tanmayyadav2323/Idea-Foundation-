@@ -3,14 +3,11 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 class VideoFiles extends Equatable {
-  final String id;
   final String title;
   final String code;
   final String link;
   final String content;
-
   VideoFiles({
-    required this.id,
     required this.title,
     required this.code,
     required this.link,
@@ -18,15 +15,17 @@ class VideoFiles extends Equatable {
   });
 
 
+
+
+ 
+
   VideoFiles copyWith({
-    String? id,
     String? title,
     String? code,
     String? link,
     String? content,
   }) {
     return VideoFiles(
-      id: id ?? this.id,
       title: title ?? this.title,
       code: code ?? this.code,
       link: link ?? this.link,
@@ -36,7 +35,6 @@ class VideoFiles extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'title': title,
       'code': code,
       'link': link,
@@ -46,7 +44,6 @@ class VideoFiles extends Equatable {
 
   factory VideoFiles.fromMap(Map<String, dynamic> map) {
     return VideoFiles(
-      id: map['id'] ?? '',
       title: map['title'] ?? '',
       code: map['code'] ?? '',
       link: map['link'] ?? '',
@@ -54,15 +51,15 @@ class VideoFiles extends Equatable {
     );
   }
 
+  String toJson() => json.encode(toMap());
+
+  factory VideoFiles.fromJson(String source) => VideoFiles.fromMap(json.decode(source));
 
   @override
-  List<Object> get props {
-    return [
-      id,
-      title,
-      code,
-      link,
-      content,
-    ];
+  String toString() {
+    return 'VideoFiles(title: $title, code: $code, link: $link, content: $content)';
   }
+
+  @override
+  List<Object> get props => [title, code, link, content];
 }
