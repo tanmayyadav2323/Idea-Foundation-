@@ -14,7 +14,7 @@ class VideoFolderPage extends StatefulWidget {
     Key? key,
     required this.docId,
   }) : super(key: key);
- 
+
   @override
   State<VideoFolderPage> createState() => _VideoFolderPageState();
 }
@@ -38,47 +38,49 @@ class _VideoFolderPageState extends State<VideoFolderPage> {
                   VideoFolder videofolder =
                       VideoFolder.fromMap(snapshot.data!.data()!);
 
-                  return Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            videofolder.name,
-                            style: TextStyle(fontSize: 20.sp),
-                          ),
-                          Spacer(),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddVideoPage(
-                                            docId: widget.docId,
-                                          )),
-                                );
-                              },
-                              icon: Icon(Icons.add))
-                        ],
-                      ),
-                      Column(
-                        children: videofolder.videos.map((video) {
-                          return buildTile(video, () async {
-                            var videoCopy = videofolder.videos;
-                            videoCopy.remove(video);
-                            var newVideoFolder =
-                                videofolder.copyWith(videos: videoCopy);
-                            Fluttertoast.showToast(msg: 'Deleting...');
-                            await FirebaseFirestore.instance
-                                .collection('VideoFolder')
-                                .doc(widget.docId)
-                                .set(newVideoFolder.toMap())
-                                .then((value) {
-                              setState(() {});
-                            });
-                          }) as Widget;
-                        }).toList(),
-                      )
-                    ],
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Videos",
+                              style: TextStyle(fontSize: 20.sp),
+                            ),
+                            Spacer(),
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddVideoPage(
+                                              docId: widget.docId,
+                                            )),
+                                  );
+                                },
+                                icon: Icon(Icons.add))
+                          ],
+                        ),
+                        Column(
+                          children: videofolder.videos.map((video) {
+                            return buildTile(video, () async {
+                              var videoCopy = videofolder.videos;
+                              videoCopy.remove(video);
+                              var newVideoFolder =
+                                  videofolder.copyWith(videos: videoCopy);
+                              Fluttertoast.showToast(msg: 'Deleting...');
+                              await FirebaseFirestore.instance
+                                  .collection('VideoFolder')
+                                  .doc(widget.docId)
+                                  .set(newVideoFolder.toMap())
+                                  .then((value) {
+                                setState(() {});
+                              });
+                            }) as Widget;
+                          }).toList(),
+                        )
+                      ],
+                    ),
                   );
                 }
                 return Center(

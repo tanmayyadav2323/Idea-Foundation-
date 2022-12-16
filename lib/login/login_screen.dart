@@ -9,6 +9,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:preco/config/session_helper.dart';
+import 'package:preco/ui/privacy_policy.dart';
+import 'package:preco/ui/terms_and_conditions.dart';
 import 'package:sizer/sizer.dart';
 
 import 'login_cubit/login_cubit.dart';
@@ -109,7 +111,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         textEditingController: _textEditingController),
                   ),
                   SizedBox(height: 1.h),
-                  _termsAndPrivacyPolicy(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _termsAndPrivacyPolicy(),
+                  ),
                   SizedBox(height: 1.5.h),
                   StandardElevatedButton(
                     isArrowButton: true,
@@ -148,46 +153,39 @@ class _LoginScreenState extends State<LoginScreen> {
       text: TextSpan(
         children: <TextSpan>[
           TextSpan(
-            text: "By continuing you agree to our ",
+            text: "By continuing you agree to our  ",
             style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600),
           ),
-          // TextSpan(
-          //     text: "Terms",
-          //     style: TextStyle(
-          //         color: Colors.blue,
-          //         fontFamily: kFontFamily,
-          //         fontSize: 8.sp,
-          //         fontWeight: FontWeight.w600),
-          //     recognizer: TapGestureRecognizer()
-          //       ..onTap = () {
-          //         const url = '';
-          //         print("Terms tapped");
-          //         // if (await canLaunch(url)) {
-          //         //   await launch(url);
-          //         // } else {
-          //         //   throw 'Could not launch $url';
-          //         // }
-          //       }),
-          // TextSpan(
-          //   text: " and ",
-          //   style: TextStyle(
-          //     color: kPrimaryBlackColor.withOpacity(0.6),
-          //     fontFamily: kFontFamily,
-          //   ),
-          // ),
           TextSpan(
               text: "Privacy Policy",
-              style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.sp),
               recognizer: TapGestureRecognizer()
-                ..onTap = () async {
-                  // const url =
-                  //     'https://docs.google.com/document/d/1I-HN3dkIZPssPKQEi_5tLnNFJq8bQVqFvv6gINBEgbk/edit';
-                  // print("Terms tapped");
-                  // if (await canLaunchUrl(Uri.parse(url))) {
-                  //   await launchUrl(Uri.parse(url));
-                  // } else {
-                  //   throw 'Could not launch $url';
-                  // }
+                ..onTap = () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PrivacyPolicy()),
+                  );
+                }),
+          TextSpan(
+            text: " and ",
+            style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w600),
+          ),
+          TextSpan(
+              text: "Terms and Conditions",
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.sp),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TermsAndConditions()),
+                  );
                 }),
         ],
       ),

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preco/config/session_helper.dart';
 import 'package:preco/login/widgets/standard_elevated_button.dart';
 import 'package:preco/repositories/user/user_repository.dart';
+import 'package:preco/ui/privacy_policy.dart';
+import 'package:preco/ui/terms_and_conditions.dart';
 import 'package:sizer/sizer.dart';
 
 import '../blocs/auth/auth_bloc.dart';
@@ -114,6 +116,57 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                       },
                     ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Text(
+                "Privacy Policy & Terms and Conditions",
+                style: TextStyle(fontSize: 20.sp),
+              ),
+              SizedBox(
+                height: 4.h,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black,
+                  ),
+                ),
+                child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PrivacyPolicy()),
+                    );
+                  },
+                  title: Text("Privacy Policy"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              SizedBox(
+                height: 2.h,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black,
+                  ),
+                ),
+                child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TermsAndConditions()),
+                    );
+                  },
+                  title: Text("Terms and Conditions"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              )
             ],
           ),
         ),
