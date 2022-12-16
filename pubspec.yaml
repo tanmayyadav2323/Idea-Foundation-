@@ -126,23 +126,6 @@ flutter:
     - assets/images/db_image3.jpg
     - assets/images/db_image4.jpg
     - assets/images/db_image5.jpg
-    - assets/images/store_image1.jpg
-    - assets/images/store_image2.jpg
-    - assets/images/store_image3.jpg
-    - assets/images/store_image4.jpg
-    - assets/images/store_image5.jpg
-    - assets/images/store_image6.jpg
-    - assets/images/store_image7.jpg
-    - assets/images/store_image8.jpg
-    - assets/images/store_image9.jpg
-    - assets/images/store_image10.jpg
-    - assets/images/store_image11.jpg
-    - assets/images/store_image12.jpg
-    - assets/images/store_image13.jpg
-    - assets/images/store_image14.jpg
-    - assets/images/store_image15.jpg
-    - assets/images/store_image16.jpg
-    - assets/images/store_image17.jpg
     - assets/images/
 
   #   - images/a_dot_ham.jpeg
